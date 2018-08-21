@@ -1,0 +1,11 @@
+﻿{
+    "Group": "Widgets",
+    "FriendlyName": "News",
+    "SystemName": "Widgets.News",
+    "Version": "1.00",
+    "SupportedVersions": [ "4.00" ],
+    "Author": "nopCommerce Brasil - www.nopcommercebrasil.com - nopcommercebrasil@nopcommercebrasil.com",
+    "DisplayOrder": 1,
+    "FileName": "NopBrasil.Plugin.Widgets.News.dll",
+    "Description": "Plugin for nopCommerce to show the last news in a widget zone"
+  }

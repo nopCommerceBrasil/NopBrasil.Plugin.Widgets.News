@@ -1,51 +1,30 @@
 using System.Collections.Generic;
-using System.Web.Routing;
+using Nop.Core;
 using Nop.Core.Plugins;
 using Nop.Services.Cms;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
-using Nop.Services.Media;
 
 namespace NopBrasil.Plugin.Widgets.News
 {
-    /// <summary>
-    /// PLugin
-    /// </summary>
     public class NewsPlugin : BasePlugin, IWidgetPlugin
     {
         private readonly ISettingService _settingService;
         private readonly NewsSettings _NewsSettings;
+        private readonly IWebHelper _webHelper;
 
-        public NewsPlugin(IPictureService pictureService,
-            ISettingService settingService, NewsSettings NewsSettings)
+        public NewsPlugin(ISettingService settingService, NewsSettings NewsSettings, IWebHelper webHelper)
         {
             this._settingService = settingService;
             this._NewsSettings = NewsSettings;
+            this._webHelper = webHelper;
         }
 
-        public IList<string> GetWidgetZones()
-        {
-            return new List<string> { _NewsSettings.WidgetZone };
-        }
+        public IList<string> GetWidgetZones() => new List<string> { _NewsSettings.WidgetZone };
 
-        public void GetConfigurationRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
-        {
-            actionName = "Configure";
-            controllerName = "WidgetsNews";
-            routeValues = new RouteValueDictionary { { "Namespaces", "NopBrasil.Plugin.Widgets.News.Controllers" }, { "area", null } };
-        }
+        public override string GetConfigurationPageUrl() => _webHelper.GetStoreLocation() + "Admin/WidgetsNews/Configure";
 
-        public void GetDisplayWidgetRoute(string widgetZone, out string actionName, out string controllerName, out RouteValueDictionary routeValues)
-        {
-            actionName = "PublicInfo";
-            controllerName = "WidgetsNews";
-            routeValues = new RouteValueDictionary
-            {
-                {"Namespaces", "NopBrasil.Plugin.Widgets.News.Controllers"},
-                {"area", null},
-                {"widgetZone", widgetZone}
-            };
-        }
+        public void GetPublicViewComponent(string widgetZone, out string viewComponentName) => viewComponentName = "WidgetsNews";
 
         public override void Install()
         {
@@ -66,10 +45,8 @@ namespace NopBrasil.Plugin.Widgets.News
 
         public override void Uninstall()
         {
-            //settings
             _settingService.DeleteSetting<NewsSettings>();
 
-            //locales
             this.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.WidgetZone");
             this.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.WidgetZone.Hint");
             this.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.QtdNewsPosts");

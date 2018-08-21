@@ -31,14 +31,13 @@ namespace NopBrasil.Plugin.Widgets.News.Service
             PublicInfoModel model = new PublicInfoModel();
             foreach (var newsItem in GetAllNewsPosts())
             {
-                string SeName = newsItem.GetSeName(newsItem.LanguageId, ensureTwoPublishedLanguages: false);
                 model.NewsItems.Add(new NewsItemModel()
                 {
                     CreatedOn = newsItem.CreatedOnUtc,
                     Title = newsItem.Title,
                     Short = newsItem.Short,
                     Full = newsItem.Full,
-                    SeName = SeName,
+                    SeName = newsItem.GetSeName(newsItem.LanguageId, ensureTwoPublishedLanguages: false),
                     Id = newsItem.Id
                 });
             }

@@ -1,28 +1,27 @@
-﻿using System.Web.Mvc;
-using NopBrasil.Plugin.Widgets.News.Models;
+﻿using NopBrasil.Plugin.Widgets.News.Models;
 using Nop.Services.Configuration;
 using Nop.Web.Framework.Controllers;
-using Nop.Web.Controllers;
-using NopBrasil.Plugin.Widgets.News.Service;
+using Nop.Web.Framework;
+using Microsoft.AspNetCore.Mvc;
+using Nop.Services.Localization;
 
 namespace NopBrasil.Plugin.Widgets.News.Controllers
 {
-    public class WidgetsNewsController : BasePublicController
+    [Area(AreaNames.Admin)]
+    public class WidgetsNewsController : BasePluginController
     {
         private readonly ISettingService _settingService;
         private readonly NewsSettings _NewsSettings;
-        private readonly IWidgetNewsService _widgetNewsService;
+        private readonly ILocalizationService _localizationService;
 
         public WidgetsNewsController(ISettingService settingService,
-            NewsSettings NewsSettings, IWidgetNewsService widgetNewsService)
+            NewsSettings NewsSettings, ILocalizationService localizationService)
         {
             this._settingService = settingService;
             this._NewsSettings = NewsSettings;
-            this._widgetNewsService = widgetNewsService;
+            this._localizationService = localizationService;
         }
 
-        [AdminAuthorize]
-        [ChildActionOnly]
         public ActionResult Configure()
         {
             var model = new ConfigurationModel()
@@ -30,28 +29,20 @@ namespace NopBrasil.Plugin.Widgets.News.Controllers
                 WidgetZone = _NewsSettings.WidgetZone,
                 QtdNewsPosts = _NewsSettings.QtdNewsPosts
             };
-            return View("~/Plugins/Widgets.News/Views/WidgetsNews/Configure.cshtml", model);
+            return View("~/Plugins/Widgets.News/Views/Configure.cshtml", model);
         }
 
         [HttpPost]
-        [AdminAuthorize]
-        [ChildActionOnly]
         public ActionResult Configure(ConfigurationModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return Configure();
-            }
+
             _NewsSettings.QtdNewsPosts = model.QtdNewsPosts;
             _NewsSettings.WidgetZone = model.WidgetZone;
             _settingService.SaveSetting(_NewsSettings);
+            SuccessNotification(_localizationService.GetResource("Admin.Plugins.Saved"));
             return Configure();
-        }
-
-        [ChildActionOnly]
-        public ActionResult PublicInfo(string widgetZone, object additionalData = null)
-        {
-             return View("~/Plugins/Widgets.News/Views/WidgetsNews/PublicInfo.cshtml", _widgetNewsService.GetModel());
         }
     }
 }
