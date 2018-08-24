@@ -13,7 +13,7 @@ namespace NopBrasil.Plugin.Widgets.News.Service
         private readonly NewsSettings _NewsSettings;
         private readonly ICacheManager _cacheManager;
 
-        public WidgetNewsService(INewsService NewsService, NewsSettings NewsSettings, ICacheManager cacheManager)
+        public WidgetNewsService(INewsService NewsService, NewsSettings NewsSettings, IStaticCacheManager cacheManager)
         {
             this._NewsService = NewsService;
             this._NewsSettings = NewsSettings;
