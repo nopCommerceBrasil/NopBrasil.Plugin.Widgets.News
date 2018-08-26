@@ -12,19 +12,19 @@ namespace NopBrasil.Plugin.Widgets.News
         private readonly ISettingService _settingService;
         private readonly NewsSettings _NewsSettings;
         private readonly IWebHelper _webHelper;
+        private readonly ILocalizationService _localizationService;
 
-        public NewsPlugin(ISettingService settingService, NewsSettings NewsSettings, IWebHelper webHelper)
+        public NewsPlugin(ISettingService settingService, NewsSettings NewsSettings, IWebHelper webHelper, ILocalizationService localizationService)
         {
             this._settingService = settingService;
             this._NewsSettings = NewsSettings;
             this._webHelper = webHelper;
+            this._localizationService = localizationService;
         }
 
         public IList<string> GetWidgetZones() => new List<string> { _NewsSettings.WidgetZone };
 
         public override string GetConfigurationPageUrl() => _webHelper.GetStoreLocation() + "Admin/WidgetsNews/Configure";
-
-        public void GetPublicViewComponent(string widgetZone, out string viewComponentName) => viewComponentName = "WidgetsNews";
 
         public override void Install()
         {
@@ -35,10 +35,10 @@ namespace NopBrasil.Plugin.Widgets.News
             };
             _settingService.SaveSetting(settings);
 
-            this.AddOrUpdatePluginLocaleResource("Plugins.Widgets.News.Fields.WidgetZone", "WidgetZone name");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Widgets.News.Fields.WidgetZone.Hint", "Enter the WidgetZone name that will display the HTML code.");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Widgets.News.Fields.QtdNewsPosts", "Number of News items");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Widgets.News.Fields.QtdNewsPosts.Hint", "Enter the number of News items that will be displayed in view.");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Widgets.News.Fields.WidgetZone", "WidgetZone name");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Widgets.News.Fields.WidgetZone.Hint", "Enter the WidgetZone name that will display the HTML code.");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Widgets.News.Fields.QtdNewsPosts", "Number of News items");
+            _localizationService.AddOrUpdatePluginLocaleResource("Plugins.Widgets.News.Fields.QtdNewsPosts.Hint", "Enter the number of News items that will be displayed in view.");
 
             base.Install();
         }
@@ -47,12 +47,14 @@ namespace NopBrasil.Plugin.Widgets.News
         {
             _settingService.DeleteSetting<NewsSettings>();
 
-            this.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.WidgetZone");
-            this.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.WidgetZone.Hint");
-            this.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.QtdNewsPosts");
-            this.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.QtdNewsPosts.Hint");
+            _localizationService.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.WidgetZone");
+            _localizationService.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.WidgetZone.Hint");
+            _localizationService.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.QtdNewsPosts");
+            _localizationService.DeletePluginLocaleResource("Plugins.Widgets.News.Fields.QtdNewsPosts.Hint");
 
             base.Uninstall();
         }
+
+        public string GetWidgetViewComponentName(string widgetZone) => "WidgetsNews";
     }
 }

@@ -12,12 +12,14 @@ namespace NopBrasil.Plugin.Widgets.News.Service
         private readonly INewsService _NewsService;
         private readonly NewsSettings _NewsSettings;
         private readonly ICacheManager _cacheManager;
+        private readonly IUrlRecordService _urlRecordService;
 
-        public WidgetNewsService(INewsService NewsService, NewsSettings NewsSettings, IStaticCacheManager cacheManager)
+        public WidgetNewsService(INewsService NewsService, NewsSettings NewsSettings, IStaticCacheManager cacheManager, IUrlRecordService urlRecordService)
         {
             this._NewsService = NewsService;
             this._NewsSettings = NewsSettings;
             this._cacheManager = cacheManager;
+            this._urlRecordService = urlRecordService;
         }
 
         private IPagedList<NewsItem> GetAllNewsPosts()
@@ -37,7 +39,7 @@ namespace NopBrasil.Plugin.Widgets.News.Service
                     Title = newsItem.Title,
                     Short = newsItem.Short,
                     Full = newsItem.Full,
-                    SeName = newsItem.GetSeName(newsItem.LanguageId, ensureTwoPublishedLanguages: false),
+                    SeName = _urlRecordService.GetSeName(newsItem, newsItem.LanguageId, ensureTwoPublishedLanguages: false),
                     Id = newsItem.Id
                 });
             }
